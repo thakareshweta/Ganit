@@ -2,6 +2,7 @@ package com.thakare.ganit
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
@@ -21,6 +22,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         idRefresh.setVisibility(View.INVISIBLE);
         initScreen()
+        if(savedInstanceState!= null ) {
+
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        outState.putInt("questionnumber1", number1 )
+        outState.putInt("questionnumber1", number2 )
+        //outState.putInt("questionnumber1", number1 ) This is if the user has added any answer
+
     }
 
     fun initScreen() {
