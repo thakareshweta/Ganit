@@ -16,20 +16,41 @@ class MainActivity : AppCompatActivity() {
     var number1 = 0;
     var number2 = 0;
     var expectedAnswer = 0;
+    var operatorSign = ""
+    var randomOperation = ""
     var startTime = System.currentTimeMillis();
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         idRefresh.setVisibility(View.INVISIBLE);
-        initScreen()
+
+        if (savedInstanceState != null) {
+            idNumber1.setText(savedInstanceState.getInt("questionnumber1").toString())
+            idNumber2.setText(savedInstanceState.getInt("questionnumber2").toString())
+            idOperation.setText(savedInstanceState.getString("operation"))
+            idOperatorSign.setText(savedInstanceState.getString("operator"))
+
+        } else {
+            initScreen()
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+
+        outState.putInt("questionnumber1", number1)
+        outState.putInt("questionnumber2", number2)
+        outState.putString("operation", randomOperation)
+        outState.putString("operatorSign", operatorSign)
+        super.onSaveInstanceState(outState)
     }
 
     fun initScreen() {
-        var randomOperationIndex = Random.nextInt(0, mathematicalOperationList.size - 1)
-        var randomOperation = mathematicalOperationList.get(randomOperationIndex)
-        var operatorSign = ""
         number1 = Random.nextInt(0, 50)
         number2 = Random.nextInt(0, 50)
+        var randomOperationIndex = Random.nextInt(0, mathematicalOperationList.size - 1)
+        randomOperation = mathematicalOperationList.get(randomOperationIndex)
+
+
         when (randomOperation) {
             "Addition" -> {
                 expectedAnswer = number1 + number2;
@@ -56,6 +77,7 @@ class MainActivity : AppCompatActivity() {
             else -> print("Invalid mathematical operation");
         }
 
+
         idOperation.setText(randomOperation)
         idNumber1.setText(number1.toString())
         idNumber2.setText(number2.toString())
@@ -76,9 +98,9 @@ class MainActivity : AppCompatActivity() {
         var resultString = ""
         var endTime = System.currentTimeMillis();
         var timeTakenToAsnwer = endTime - startTime;
-        val seconds = timeTakenToAsnwer/1000;
+        val seconds = timeTakenToAsnwer / 1000;
 
-        if(Integer.parseInt(answerByUser) == expectedAnswer){
+        if (Integer.parseInt(answerByUser) == expectedAnswer) {
             resultString = "Yaay!! you are a genius!!"
         } else {
             resultString = "No worries!! All you need is some more practice!"
@@ -107,7 +129,7 @@ class MainActivity : AppCompatActivity() {
 
     fun hideKeyboard(view: View) {
 
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }
