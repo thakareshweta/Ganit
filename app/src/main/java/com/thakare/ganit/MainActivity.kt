@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
             idNumber1.setText(savedInstanceState.getInt("questionnumber1").toString())
             idNumber2.setText(savedInstanceState.getInt("questionnumber2").toString())
             idOperation.setText(savedInstanceState.getString("operation"))
-            idOperatorSign.setText(savedInstanceState.getString("operator"))
+            idOperatorSign.setText(savedInstanceState.getString("operatorSign"))
 
         } else {
             initScreen()
