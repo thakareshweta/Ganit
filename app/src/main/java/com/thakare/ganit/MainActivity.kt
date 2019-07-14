@@ -12,7 +12,7 @@ import kotlin.random.Random
 class MainActivity : AppCompatActivity() {
 
     var mathematicalOperationList =
-        listOf("Addition", "Subtraction", "Multiplication", "Division") //use other appropriate data structure here
+        listOf("Addition", "Subtraction") //use other appropriate data structure here
     var number1 = 0;
     var number2 = 0;
     var expectedAnswer = 0;
@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
             idNumber2.setText(savedInstanceState.getInt("questionnumber2").toString())
             idOperation.setText(savedInstanceState.getString("operation"))
             idOperatorSign.setText(savedInstanceState.getString("operatorSign"))
+            expectedAnswer = savedInstanceState.getInt("expectedAnswer")
 
         } else {
             initScreen()
@@ -36,41 +37,35 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-
         outState.putInt("questionnumber1", number1)
         outState.putInt("questionnumber2", number2)
+        outState.putInt("expectedAnswer", expectedAnswer)
         outState.putString("operation", randomOperation)
         outState.putString("operatorSign", operatorSign)
         super.onSaveInstanceState(outState)
     }
 
     fun initScreen() {
-        number1 = Random.nextInt(0, 50)
-        number2 = Random.nextInt(0, 50)
-        var randomOperationIndex = Random.nextInt(0, mathematicalOperationList.size - 1)
+        number1 = Random.nextInt(2, 50)
+        number2 = Random.nextInt(1, number1)
+        var randomOperationIndex = Random.nextInt(0, mathematicalOperationList.size)
         randomOperation = mathematicalOperationList.get(randomOperationIndex)
-
 
         when (randomOperation) {
             "Addition" -> {
                 expectedAnswer = number1 + number2;
-                System.out.println("Random operation in switch is  Addition");
                 operatorSign = "+"
             }
 
             "Subtraction" -> {
-
-                System.out.println("Random operation in switch is  Subtraction")
                 expectedAnswer = number1 - number2
                 operatorSign = "-"
             }
             "Multiplication" -> {
                 expectedAnswer = number1 * number2
-                System.out.println("Random operation in switch is  Multi")
                 operatorSign = "*"
             }
             "Division" -> {
-                System.out.println("Random operation in switch is  Div")
                 expectedAnswer = number1 / number2
                 operatorSign = "/"
             }
@@ -99,7 +94,7 @@ class MainActivity : AppCompatActivity() {
         var endTime = System.currentTimeMillis();
         var timeTakenToAsnwer = endTime - startTime;
         val seconds = timeTakenToAsnwer / 1000;
-
+        
         if (Integer.parseInt(answerByUser) == expectedAnswer) {
             resultString = "Yaay!! you are a genius!!"
         } else {
