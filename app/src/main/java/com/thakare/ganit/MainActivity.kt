@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlin.math.pow
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
@@ -21,12 +23,18 @@ class MainActivity : AppCompatActivity() {
     var startTime = System.currentTimeMillis();
     var currLevel = 0 ;
     var currQuestion = 0 ;
+    var outStr = "";
+    var score = 0 ;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         idRefresh.setVisibility(View.INVISIBLE);
+        outStr = "Created  ";
+        idResult.setText(outStr);
+        idResult.setVisibility(View.VISIBLE);
 
         if (savedInstanceState != null) {
+            outStr += " From not Null " ;
             idNumber1.setText(savedInstanceState.getInt("questionnumber1").toString())
             idNumber2.setText(savedInstanceState.getInt("questionnumber2").toString())
             idOperation.setText(savedInstanceState.getString("operation"))
@@ -34,34 +42,64 @@ class MainActivity : AppCompatActivity() {
             expectedAnswer = savedInstanceState.getInt("expectedAnswer")
 
         } else {
+
+            val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
+           // val defaultValue = resources.getInteger(R.integer.saved_high_score_default_key)
+            currQuestion  = sharedPref.getInt("currQuestion", currQuestion);
+            currLevel = sharedPref.getInt("currLevel",currLevel);
+            score = sharedPref.getInt("score", score);
+            outStr += " From Null " ;
+            outStr += "Question ${currQuestion}" ;
             initScreen()
         }
+        idResult.setText ( outStr );
+
     }
 
+
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt("questionnumber1", number1)
-        outState.putInt("questionnumber2", number2)
-        outState.putInt("expectedAnswer", expectedAnswer)
-        outState.putString("operation", randomOperation)
-        outState.putString("operatorSign", operatorSign)
-        super.onSaveInstanceState(outState)
+
+        val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
+        with (sharedPref.edit()) {
+            putInt("currQuestion", currQuestion)
+            putInt("currLevel",currLevel)
+            putInt("score",score)
+            commit()
+        }
+
+        outState.putInt("questionnumber1", number1);
+        outState.putInt("questionnumber2", number2);
+        outState.putInt("expectedAnswer", expectedAnswer);
+        outState.putString("operation", randomOperation);
+        outState.putString("operatorSign", operatorSign);
+        super.onSaveInstanceState(outState);
     }
 
     fun initScreen() {
-        number1 = Random.nextInt(2, 50)
-        number2 = Random.nextInt(1, number1)
+
         var randomOperationIndex = Random.nextInt(0, mathematicalOperationList.size)
         randomOperation = mathematicalOperationList.get(randomOperationIndex)
         currQuestion += 1 ;
+        idResult.setText("Level ${currLevel}         Question ${currQuestion}       Score  ${score}");
+        idResult.setVisibility(View.VISIBLE);
+        var range = 1
+        for (i in  0..currLevel ) {
+            range *= 10
+        }
         when (randomOperation) {
             "Addition" -> {
-                number1 = Random.nextInt(1, 50)
-                number2 = Random.nextInt(1, 50)
+                number1 = ( Random.nextInt(1, range ) )
+                number2 = Random.nextInt(1, range )
                 expectedAnswer = number1 + number2;
                 operatorSign = "+"
             }
 
             "Subtraction" -> {
+                number1 = ( Random.nextInt(1, range ) )
+                if(currLevel < 6 )
+                    number2 = Random.nextInt(1, number1 )
+                else
+                    number2 = Random.nextInt(1, range )
                 expectedAnswer = number1 - number2
                 operatorSign = "-"
             }
@@ -82,6 +120,9 @@ class MainActivity : AppCompatActivity() {
         idNumber2.setText(number2.toString())
         idOperatorSign.setText(operatorSign)
         idAnswer.setText("")
+        outStr = "Level ${currLevel}         Question ${currQuestion}       Score  ${score}"
+        idResult.setText(outStr);
+        idResult.setVisibility(View.VISIBLE);
         startTime = System.currentTimeMillis();
     }
 
@@ -101,7 +142,9 @@ class MainActivity : AppCompatActivity() {
         
         if (Integer.parseInt(answerByUser) == expectedAnswer) {
             resultString = "Yaay!! you are a genius!!"
+            score += (5 + currLevel);
         } else {
+            score -= 1 ;
             resultString = "No worries!! All you need is some more practice!, Correct Answer is ${expectedAnswer}. "
         }
 
@@ -116,12 +159,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         idResult.setText(resultString)
+        //idResult.setTextColor(8);
+        idResult.setVisibility(View.VISIBLE)
     }
 
     fun refreshSlate(view: View) {
-        recreate() // Commented since it caused flicker in the App
+       // recreate() // Commented since it caused flicker in the App
         initScreen()
-        idResult.setVisibility(View.INVISIBLE)
+        //idResult.setVisibility(View.INVISIBLE)
         idRefresh.setVisibility(View.INVISIBLE);
         idSubmit.setVisibility(View.VISIBLE)
     }
