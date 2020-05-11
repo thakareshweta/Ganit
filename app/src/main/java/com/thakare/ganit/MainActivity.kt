@@ -148,7 +148,7 @@ class MainActivity : AppCompatActivity() {
             resultString = "No worries!! All you need is some more practice!, Correct Answer is ${expectedAnswer}. "
         }
 
-        resultString = resultString + " Time taken to solve the sum:  ${seconds} seconds"
+        resultString = resultString + " Time this is rebase_this taken to solve the sum:  ${seconds} seconds"
         if(currQuestion >= 10 ) {
             // Level Up
             currLevel += 1 ;
