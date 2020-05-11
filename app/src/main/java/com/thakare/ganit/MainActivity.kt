@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity() {
             score += (5 + currLevel);
         } else {
             score -= 1 ;
-            resultString = "No worries!! All you need is some more practice!, Correct Answer is ${expectedAnswer}. "
+            resultString = "No worries. LEt's rebase this !! All you need is some more practice!, Correct Answer is ${expectedAnswer}. "
         }
 
         resultString = resultString + " Time taken to solve the sum:  ${seconds} seconds"
